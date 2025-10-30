@@ -107,6 +107,9 @@ export default {
 	'buzzer-speaker-pin-label': 'Buzzer GPIO Pin',
 	'buzzer-speaker-enable-pin-label': 'Buzzer Enable GPIO Pin',
 	'buzzer-speaker-volume-label': 'Buzzer Volume',
+	'legends-plunger-header-text': 'Legends Plunger',
+	'legends-plunger-clock-pin-label': 'Clock GPIO Pin',
+	'legends-plunger-data-pin-label': 'Data GPIO Pin',
 	'player-number-header-text': 'Player Number (X-INPUT ONLY)',
 	'player-number-sub-header': 'Warning',
 	'player-number-sub-header-text':

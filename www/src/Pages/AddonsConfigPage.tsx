@@ -19,6 +19,7 @@ import Analog1256, {
 } from '../Addons/Analog1256';
 import Bootsel, { bootselScheme, bootselState } from '../Addons/Bootsel';
 import Buzzer, { buzzerScheme, buzzerState } from '../Addons/Buzzer';
+import LegendsPlunger, { legendsPlungerScheme, legendsPlungerState } from '../Addons/LegendsPlunger';
 import DualDirection, {
 	dualDirectionScheme,
 	dualDirectionState,
@@ -81,6 +82,7 @@ const schema = yup.object().shape({
 	...dualDirectionScheme,
 	...tiltScheme,
 	...buzzerScheme,
+	...legendsPlungerScheme,
 	...socdScheme,
 	...wiiScheme,
 	...focusModeScheme,
@@ -104,6 +106,7 @@ export const DEFAULT_VALUES = {
 	...dualDirectionState,
 	...tiltState,
 	...buzzerState,
+	...legendsPlungerState,
 	...socdState,
 	...wiiState,
 	...snesState,
@@ -129,6 +132,7 @@ const ADDONS = [
 	DualDirection,
 	Tilt,
 	Buzzer,
+	LegendsPlunger,
 	SOCD,
 	Wii,
 	SNES,

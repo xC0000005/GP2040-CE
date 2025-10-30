@@ -728,6 +728,13 @@ message SNESOptions
     optional int32 dataPin = 4;
 }
 
+message LegendsPlungerOptions
+{
+    optional bool enabled = 1;
+    optional int32 clockPin = 2;
+    optional int32 dataPin = 4;
+}
+
 message TG16Options
 {
     optional bool enabled = 1;
@@ -916,6 +923,7 @@ message AddonOptions
     optional GamepadUSBHostOptions gamepadUSBHostOptions = 28;
     optional TG16Options tg16Options = 29;
     optional HETriggerOptions heTriggerOptions = 30;
+    optional LegendsPlungerOptions legendsPlungerOptions = 31;
 }
 
 message MigrationHistory

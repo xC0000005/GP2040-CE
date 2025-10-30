@@ -1777,6 +1777,11 @@ std::string setAddonOptions()
     docToPin(snesOptions.latchPin, doc, "snesPadLatchPin");
     docToPin(snesOptions.dataPin, doc, "snesPadDataPin");
 
+    LegendsPlungerOptions& legendsPlungerOptions = Storage::getInstance().getAddonOptions().legendsPlungerOptions;
+    docToValue(legendsPlungerOptions.enabled, doc, "LegendsPlungerAddonEnabled");
+    docToPin(legendsPlungerOptions.clockPin, doc, "legendsPlungerClockPin");
+    docToPin(legendsPlungerOptions.dataPin, doc, "legendsPlungerDataPin");
+
     KeyboardHostOptions& keyboardHostOptions = Storage::getInstance().getAddonOptions().keyboardHostOptions;
     docToValue(keyboardHostOptions.enabled, doc, "KeyboardHostAddonEnabled");
     docToValue(keyboardHostOptions.mapping.keyDpadUp, doc, "keyboardHostMap", "Up");
@@ -2224,6 +2229,11 @@ std::string getAddonOptions()
     writeDoc(doc, "snesPadLatchPin", cleanPin(snesOptions.latchPin));
     writeDoc(doc, "snesPadDataPin", cleanPin(snesOptions.dataPin));
     writeDoc(doc, "SNESpadAddonEnabled", snesOptions.enabled);
+
+    const LegendsPlungerOptions& legendsPlungerOptions = Storage::getInstance().getAddonOptions().legendsPlungerOptions;
+    writeDoc(doc, "legendsPlungerClockPin", cleanPin(legendsPlungerOptions.clockPin));
+    writeDoc(doc, "legendsPlungerDataPin", cleanPin(legendsPlungerOptions.dataPin));
+    writeDoc(doc, "LegendsPlungerAddonEnabled", legendsPlungerOptions.enabled);
 
     const KeyboardHostOptions& keyboardHostOptions = Storage::getInstance().getAddonOptions().keyboardHostOptions;
     writeDoc(doc, "KeyboardHostAddonEnabled", keyboardHostOptions.enabled);
