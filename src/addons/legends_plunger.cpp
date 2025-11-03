@@ -4,6 +4,22 @@
 #include "hardware/gpio.h"
 #include "helper.h"
 
+// how long to signal a reset
+#define RESET_DELAY 1000
+
+// 8, E, 1 is a start bit, an even parity bit, eight data bites and a stop bit
+#define CLOCK_BITS 11
+#define PLUNGER_VALUE_INDEX 0
+#define VALUES_PER_PACKET 4
+#define DATA_MASK 0x1FF
+
+volatile short reading = 0;
+short new_reading = 0;
+
+short bit = 0;
+int data_index = 0;
+int sda_pin = -1;
+
 bool LegendsPlungerInput::available() {
     const LegendsPlungerOptions& legendsPlungerOptions = Storage::getInstance().getAddonOptions().legendsPlungerOptions;
 
@@ -14,6 +30,26 @@ bool LegendsPlungerInput::available() {
 
 // Interrupt handler function
 void clock_pin_callback(unsigned int gpio, uint32_t events) {
+  int value = gpio_get(sda_pin) ? 0 : 1;
+  new_reading |= (value << bit++);
+  //digitalWrite(LED_BUILTIN, value);
+  
+  if (bit == CLOCK_BITS) {
+    if (data_index == PLUNGER_VALUE_INDEX) {
+      // we want to mask off the top two bits (the start/parity) and shift away the last (stop);
+      new_reading = (new_reading & DATA_MASK) >> 1;
+      reading = new_reading;
+    }
+    
+    data_index++;
+    
+    if (data_index == VALUES_PER_PACKET) {
+      data_index = 0;
+    }
+
+    bit = 0;
+    new_reading = 0;        
+  }
 }
 
 void LegendsPlungerInput::setup() {
@@ -25,6 +61,7 @@ void LegendsPlungerInput::setup() {
     uIntervalMS = 1;
     nextTimer = getMillis();
 
+    sda_pin = legendsPlungerOptions.dataPin;
     gpio_init(legendsPlungerOptions.dataPin);             // Initialize pin
     gpio_set_dir(legendsPlungerOptions.dataPin, GPIO_IN); // Set as OUTPUT
 
@@ -47,7 +84,7 @@ void LegendsPlungerInput::setup() {
 
 void LegendsPlungerInput::process() {
     if (nextTimer < getMillis()) {
-        // snes->poll();
+        plunger_reading = reading;
 
         uint16_t joystickMid = GAMEPAD_JOYSTICK_MID;
         if ( DriverManager::getInstance().getDriver() != nullptr ) {

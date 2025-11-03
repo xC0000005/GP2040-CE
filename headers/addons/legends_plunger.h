@@ -37,7 +37,6 @@ private:
     uint32_t nextTimer;         // Plunger Timer
     uint16_t plunger_reading = 0;
     uint16_t rightY = 0;
-
     uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
 };
 
