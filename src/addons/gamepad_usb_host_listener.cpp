@@ -25,7 +25,6 @@ void GamepadUSBHostListener::process() {
     gamepad->hasLeftAnalogStick  = _controller_host_analog;
     gamepad->hasRightAnalogStick = _controller_host_analog;
     gamepad->state.dpad         |= _controller_host_state.dpad;
-    gamepad->state.dpadOriginal |= _controller_host_state.dpad;
     gamepad->state.buttons  |= _controller_host_state.buttons;
     gamepad->state.lx       = _controller_host_state.lx;
     gamepad->state.ly       = _controller_host_state.ly;
@@ -846,7 +845,6 @@ void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint
     //_controller_host_analog = true;
     
     _controller_host_state.dpad = 0;
-    printf("Hat: %d\n", controller_report.Hat >> 4);
     switch (controller_report.Hat >> 4) {
         case 0: _controller_host_state.dpad |= GAMEPAD_MASK_UP; break;
         case 1: _controller_host_state.dpad |= GAMEPAD_MASK_UP | GAMEPAD_MASK_RIGHT; break;
