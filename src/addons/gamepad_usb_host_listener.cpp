@@ -241,7 +241,7 @@ void GamepadUSBHostListener::process_ctrlr_report(uint8_t dev_addr, uint8_t cons
         case 0x0511:               // Ultrakstik 360
             process_ultrastik360(report, len);
             break;
-        case 0x9527:               // ATGames Legends Mini OTG
+        case 0x9527:               // ATGames Legends Pinball OTG
             process_legends_pinball(report, len);
             break;
         default:
