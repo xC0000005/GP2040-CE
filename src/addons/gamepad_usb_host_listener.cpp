@@ -115,7 +115,7 @@ void GamepadUSBHostListener::mount(uint8_t dev_addr, uint8_t instance, uint8_t c
         case 0x9400:               // Google Stadia controller
         case 0x0510:               // pre-2015 Ultrakstik 360
         case 0x0511:               // Ultrakstik 360
-        case 0x9527:               // ATGames Legends Mini OTG
+        case 0x9527:               // ATGames Legends Pinball OTG
         default:
             break;
     }
@@ -817,9 +817,9 @@ void GamepadUSBHostListener::process_ultrastik360(uint8_t const* report, uint16_
 
 void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint16_t len) {
     
-    static atgames_legends_mini_report_t prev_controller_report;
+    static atgames_legends_pinball_report_t prev_controller_report;
 
-    atgames_legends_mini_report_t controller_report;
+    atgames_legends_pinball_report_t controller_report;
 
     memcpy(&controller_report, report, sizeof(controller_report));
 

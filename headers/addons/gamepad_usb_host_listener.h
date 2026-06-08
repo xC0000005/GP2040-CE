@@ -120,10 +120,10 @@ typedef struct __attribute__((packed)) {
     uint8_t subcommand_args[3];
 } SwitchProHostReport;
 
-// Legends Mini OTG controller report struct
+// Legends Pinball OTG controller report struct
 typedef struct TU_ATTR_PACKED
 {
-    // On the legends mini there's 2 bytes worth of buttons for a total of 8 buttons
+    // On the legends pinball there's 2 bytes worth of buttons for a total of 8 buttons
     // and there's no logical correlation to what button maps to what number.
     // Collection: CA:GamePad
     uint16_t  BTN_GamePadButton1 : 1;                  // Usage 0x1: Button 1, Value = 0 to 1                :: L2
@@ -150,7 +150,7 @@ typedef struct TU_ATTR_PACKED
     uint8_t  RotationX;                       // Usage 0x00010030: X, Value = 1 to 255
     uint8_t  RotationY;                       // Usage 0x00010031: Y, Value = 1 to 255
     uint8_t  AlwaysHex09;                            // No idea, it's always 0x90, maybe a status byte or something?
- } atgames_legends_mini_report_t;
+ } atgames_legends_pinball_report_t;
 
  // Add other controller structs here
 
