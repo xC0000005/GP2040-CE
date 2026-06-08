@@ -120,7 +120,40 @@ typedef struct __attribute__((packed)) {
     uint8_t subcommand_args[3];
 } SwitchProHostReport;
 
-// Add other controller structs here
+// Legends Mini OTG controller report struct
+typedef struct TU_ATTR_PACKED
+{
+    // On the legends mini there's 2 bytes worth of buttons for a total of 8 buttons
+    // and there's no logical correlation to what button maps to what number.
+    // Collection: CA:GamePad
+    uint16_t  BTN_GamePadButton1 : 1;                  // Usage 0x1: Button 1, Value = 0 to 1                :: L2
+    uint16_t  BTN_GamePadButton2 : 1;                  // Usage 0x2: Button 2, Value = 0 to 1                :: L2
+    uint16_t  BTN_PAD_3 : 1;                           // Padding, not set
+    uint16_t  BTN_PAD_4 : 1;                           // Padding, not set
+    uint16_t  BTN_GamePadButton5 : 1;                  // Usage 0x10: Button 5, Value = 0 to 1  0 to 1                :: R2
+    uint16_t  BTN_GamePadButton6 : 1;                  // Usage 0x20: Button 5, Value = 0 to 1  0 to 1                :: R2
+    uint16_t  BTN_PAD_7 : 1;                           // Padding, not set
+    uint16_t  BTN_GamePadButton8 : 1;                  // Usage 0x80: Button 8, Value = 0 to 1                :: Capture button
+    uint16_t  BTN_PAD_9 : 1;                           // Padding, not set
+    uint16_t  BTN_GamePadButton10 : 1;                  // Usage 0x0002: Button 10, Value = 0 to 1                :: Google assistant
+    uint16_t  BTN_GamePadButton11 : 1;                  // Usage 0x0004: Button 10, Value = 0 to 1                :: Google assistant
+    uint16_t  BTN_GamePadButton12 : 1;                  // Usage 0x0008: Button 10, Value = 0 to 1                :: Google assistant
+    uint16_t  BTN_PAD_13 : 1;                           // Padding, not set
+    uint16_t  BTN_PAD_14 : 1;                           // Padding, not set
+    uint16_t  BTN_PAD_15 : 1;                           // Padding, not set
+    uint16_t  BTN_PAD_16 : 1;                           // Padding, not set
+    uint8_t  Hat;                                      // Top Nibble is the d-pad which is mapped like a hat (0-7, 8 for neutral), Bottom Nibble is always 0x0
+    uint8_t  AlwaysHex80_2;                            // No idea, it's always 0x80, maybe a status byte or something?
+    uint8_t  AlwaysHex80_3;                             // No idea, it's always 0x80, maybe a status byte or something?
+    uint8_t  AlwaysHex80_4;                            // No idea, it's always 0x80, maybe a status byte or something?
+                                                        // Collection: X accelerometer, Y accelerometer, HAT (Plunger button)
+    uint8_t  RotationX;                       // Usage 0x00010030: X, Value = 1 to 255
+    uint8_t  RotationY;                       // Usage 0x00010031: Y, Value = 1 to 255
+    uint8_t  AlwaysHex09;                            // No idea, it's always 0x90, maybe a status byte or something?
+ } atgames_legends_mini_report_t;
+
+ // Add other controller structs here
+
 class GamepadUSBHostListener : public USBListener {
     public:// USB Listener Features
         virtual void setup();
@@ -187,6 +220,7 @@ class GamepadUSBHostListener : public USBListener {
         void update_xinput(uint8_t dev_addr, uint8_t instance);
         void process_xbox360(uint8_t const* report, uint16_t len);
 
+        void process_legends_pinball(uint8_t const* report, uint16_t len);
         uint16_t controller_pid, controller_vid;
 
         uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max);

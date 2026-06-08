@@ -15,6 +15,7 @@ void GamepadUSBHostListener::setup() {
     _controller_host_enabled = false;
 #if GAMEPAD_HOST_DEBUG
     stdio_init_all();
+    printf("Gamepad USB Host Listener setup complete\n");
 #endif
 }
 
@@ -23,7 +24,8 @@ void GamepadUSBHostListener::process() {
     gamepad->hasAnalogTriggers   = _controller_host_analog;
     gamepad->hasLeftAnalogStick  = _controller_host_analog;
     gamepad->hasRightAnalogStick = _controller_host_analog;
-    gamepad->state.dpad     |= _controller_host_state.dpad;
+    gamepad->state.dpad         |= _controller_host_state.dpad;
+    gamepad->state.dpadOriginal |= _controller_host_state.dpad;
     gamepad->state.buttons  |= _controller_host_state.buttons;
     gamepad->state.lx       = _controller_host_state.lx;
     gamepad->state.ly       = _controller_host_state.ly;
@@ -114,6 +116,7 @@ void GamepadUSBHostListener::mount(uint8_t dev_addr, uint8_t instance, uint8_t c
         case 0x9400:               // Google Stadia controller
         case 0x0510:               // pre-2015 Ultrakstik 360
         case 0x0511:               // Ultrakstik 360
+        case 0x9527:               // ATGames Legends Mini OTG
         default:
             break;
     }
@@ -238,6 +241,9 @@ void GamepadUSBHostListener::process_ctrlr_report(uint8_t dev_addr, uint8_t cons
         case 0x0510:               // pre-2015 Ultrakstik 360
         case 0x0511:               // Ultrakstik 360
             process_ultrastik360(report, len);
+            break;
+        case 0x9527:               // ATGames Legends Mini OTG
+            process_legends_pinball(report, len);
             break;
         default:
             break;
@@ -808,6 +814,64 @@ void GamepadUSBHostListener::process_ultrastik360(uint8_t const* report, uint16_
     if (controller_report.BTN_GamePadButton6 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_L2;
     if (controller_report.BTN_GamePadButton7 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R1;
     if (controller_report.BTN_GamePadButton8 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R2;
+}
+
+void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint16_t len) {
+    
+    static atgames_legends_mini_report_t prev_controller_report;
+
+    atgames_legends_mini_report_t controller_report;
+
+    memcpy(&controller_report, report, sizeof(controller_report));
+
+#if GAMEPAD_HOST_DEBUG
+    //printf("\033[1;0H\nHost (%d):\n", len);
+    //for (uint8_t i = 0; i < len; i++) {
+    //    printf("%02x ", report[i]);
+    //    if (((i+1) % 16) == 0) printf("\n");
+    // }
+    // printf("----\n");
+#endif
+
+    // No reason to update if it's the same as last time
+    // only look at first three bytes because the accelerometer data changes constantly.
+    if (memcmp(&prev_controller_report, &controller_report, 3) == 0)
+    {
+        return;
+    }
+
+    // How should we map accelerometer data?
+    //_controller_host_state.lx = map(controller_report.RotationX, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
+    //_controller_host_state.ly = map(controller_report.RotationY, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
+    //_controller_host_analog = true;
+    
+    _controller_host_state.dpad = 0;
+    printf("Hat: %d\n", controller_report.Hat >> 4);
+    switch (controller_report.Hat >> 4) {
+        case 0: _controller_host_state.dpad |= GAMEPAD_MASK_UP; break;
+        case 1: _controller_host_state.dpad |= GAMEPAD_MASK_UP | GAMEPAD_MASK_RIGHT; break;
+        case 2: _controller_host_state.dpad |= GAMEPAD_MASK_RIGHT; break;
+        case 3: _controller_host_state.dpad |= GAMEPAD_MASK_RIGHT | GAMEPAD_MASK_DOWN; break;
+        case 4: _controller_host_state.dpad |= GAMEPAD_MASK_DOWN; break;
+        case 5: _controller_host_state.dpad |= GAMEPAD_MASK_DOWN | GAMEPAD_MASK_LEFT; break;
+        case 6: _controller_host_state.dpad |= GAMEPAD_MASK_LEFT; break;
+        case 7: _controller_host_state.dpad |= GAMEPAD_MASK_LEFT | GAMEPAD_MASK_UP; break;
+        case 8: break; // neutral  
+    }   
+
+    printf("Dpad: %d\n", _controller_host_state.dpad);
+
+    _controller_host_state.buttons = 0;
+    if (controller_report.BTN_GamePadButton1 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B1;
+    if (controller_report.BTN_GamePadButton2 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B2;
+    if (controller_report.BTN_GamePadButton5 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B3;
+    if (controller_report.BTN_GamePadButton6 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B4;    
+    if (controller_report.BTN_GamePadButton8 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_L1;
+    if (controller_report.BTN_GamePadButton10 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R1;
+    if (controller_report.BTN_GamePadButton11 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_L2;
+    if (controller_report.BTN_GamePadButton12 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R2;
+
+    memcpy(&prev_controller_report, &controller_report, sizeof(controller_report));
 }
 
 void GamepadUSBHostListener::xbox360_set_led(uint8_t dev_addr, uint8_t instance, uint8_t quadrant) {
