@@ -25,7 +25,6 @@ void GamepadUSBHostListener::process() {
     gamepad->hasLeftAnalogStick  = _controller_host_analog;
     gamepad->hasRightAnalogStick = _controller_host_analog;
     gamepad->state.dpad         |= _controller_host_state.dpad;
-    gamepad->state.dpadOriginal |= _controller_host_state.dpad;
     gamepad->state.buttons  |= _controller_host_state.buttons;
     gamepad->state.lx       = _controller_host_state.lx;
     gamepad->state.ly       = _controller_host_state.ly;
