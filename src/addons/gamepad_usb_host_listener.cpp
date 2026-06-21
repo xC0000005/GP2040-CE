@@ -858,8 +858,6 @@ void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint
         case 8: break; // neutral  
     }   
 
-    printf("Dpad: %d\n", _controller_host_state.dpad);
-
     _controller_host_state.buttons = 0;
     if (controller_report.BTN_GamePadButton1 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B1;
     if (controller_report.BTN_GamePadButton2 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B2;

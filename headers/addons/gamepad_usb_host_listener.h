@@ -126,22 +126,23 @@ typedef struct TU_ATTR_PACKED
     // On the legends pinball there's 2 bytes worth of buttons for a total of 8 buttons
     // and there's no logical correlation to what button maps to what number.
     // Collection: CA:GamePad
-    uint16_t  BTN_GamePadButton1 : 1;                  // Usage 0x1: Button 1, Value = 0 to 1                :: L2
-    uint16_t  BTN_GamePadButton2 : 1;                  // Usage 0x2: Button 2, Value = 0 to 1                :: L2
+    uint16_t  BTN_GamePadButton1 : 1;                  // Button 1 Back/Rewind
+    uint16_t  BTN_GamePadButton2 : 1;                  // Button 2, Forward Nudge
     uint16_t  BTN_PAD_3 : 1;                           // Padding, not set
     uint16_t  BTN_PAD_4 : 1;                           // Padding, not set
-    uint16_t  BTN_GamePadButton5 : 1;                  // Usage 0x10: Button 5, Value = 0 to 1  0 to 1                :: R2
-    uint16_t  BTN_GamePadButton6 : 1;                  // Usage 0x20: Button 5, Value = 0 to 1  0 to 1                :: R2
+    uint16_t  BTN_GamePadButton5 : 1;                  // Button 5, Left Nudge
+    uint16_t  BTN_GamePadButton6 : 1;                  // Button 6, Right Flipper
     uint16_t  BTN_PAD_7 : 1;                           // Padding, not set
-    uint16_t  BTN_GamePadButton8 : 1;                  // Usage 0x80: Button 8, Value = 0 to 1                :: Capture button
+    uint16_t  BTN_GamePadButton8 : 1;                  // Button 8, Start
     uint16_t  BTN_PAD_9 : 1;                           // Padding, not set
-    uint16_t  BTN_GamePadButton10 : 1;                  // Usage 0x0002: Button 10, Value = 0 to 1                :: Google assistant
-    uint16_t  BTN_GamePadButton11 : 1;                  // Usage 0x0004: Button 10, Value = 0 to 1                :: Google assistant
-    uint16_t  BTN_GamePadButton12 : 1;                  // Usage 0x0008: Button 10, Value = 0 to 1                :: Google assistant
+    uint16_t  BTN_GamePadButton10 : 1;                 // Button 10, AT Games (Start)
+    uint16_t  BTN_GamePadButton11 : 1;                 // Button 11, Left Flipper
+    uint16_t  BTN_GamePadButton12 : 1;                 // Button 12, Right Nudge
     uint16_t  BTN_PAD_13 : 1;                           // Padding, not set
     uint16_t  BTN_PAD_14 : 1;                           // Padding, not set
     uint16_t  BTN_PAD_15 : 1;                           // Padding, not set
     uint16_t  BTN_PAD_16 : 1;                           // Padding, not set
+                                                        // The red "Plunge" button on the mini is mapped to dpad/Hat down
     uint8_t  Hat;                                      // Top Nibble is the d-pad which is mapped like a hat (0-7, 8 for neutral), Bottom Nibble is always 0x0
     uint8_t  AlwaysHex80_2;                            // No idea, it's always 0x80, maybe a status byte or something?
     uint8_t  AlwaysHex80_3;                             // No idea, it's always 0x80, maybe a status byte or something?
