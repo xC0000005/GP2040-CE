@@ -125,8 +125,7 @@ typedef struct TU_ATTR_PACKED
 {
     // On the legends pinball there's 2 bytes worth of buttons for a total of 8 buttons
     // and there's no logical correlation to what button maps to what number.
-    // Collection: CA:GamePad
-    uint16_t  BTN_GamePadButton1 : 1;                  // Button 1 Back/Rewind
+    uint16_t  BTN_GamePadButton1 : 1;                  // Button 1 Rewind/Select
     uint16_t  BTN_GamePadButton2 : 1;                  // Button 2, Forward Nudge
     uint16_t  BTN_PAD_3 : 1;                           // Padding, not set
     uint16_t  BTN_PAD_4 : 1;                           // Padding, not set
@@ -135,7 +134,7 @@ typedef struct TU_ATTR_PACKED
     uint16_t  BTN_PAD_7 : 1;                           // Padding, not set
     uint16_t  BTN_GamePadButton8 : 1;                  // Button 8, Start
     uint16_t  BTN_PAD_9 : 1;                           // Padding, not set
-    uint16_t  BTN_GamePadButton10 : 1;                 // Button 10, AT Games (Start)
+    uint16_t  BTN_GamePadButton10 : 1;                 // Button 10, AT Games (Home)
     uint16_t  BTN_GamePadButton11 : 1;                 // Button 11, Left Flipper
     uint16_t  BTN_GamePadButton12 : 1;                 // Button 12, Right Nudge
     uint16_t  BTN_PAD_13 : 1;                           // Padding, not set

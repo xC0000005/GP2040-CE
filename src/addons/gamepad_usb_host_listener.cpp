@@ -838,11 +838,6 @@ void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint
     {
         return;
     }
-
-    // How should we map accelerometer data?
-    //_controller_host_state.lx = map(controller_report.RotationX, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
-    //_controller_host_state.ly = map(controller_report.RotationY, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
-    //_controller_host_analog = true;
     
     _controller_host_state.dpad = 0;
     printf("Hat: %d\n", controller_report.Hat >> 4);
@@ -859,14 +854,53 @@ void GamepadUSBHostListener::process_legends_pinball(uint8_t const* report, uint
     }   
 
     _controller_host_state.buttons = 0;
-    if (controller_report.BTN_GamePadButton1 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B1;
-    if (controller_report.BTN_GamePadButton2 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B2;
-    if (controller_report.BTN_GamePadButton5 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B3;
-    if (controller_report.BTN_GamePadButton6 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B4;    
-    if (controller_report.BTN_GamePadButton8 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_L1;
-    if (controller_report.BTN_GamePadButton10 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R1;
+
+    // Since the dpad is mapped to the hat and plunger button is also the hat, provide
+    // an option to map the plunger button to an auto-incrementing value so the longer
+    // you hold the plunger button, the stronger the pull, and release to launch the ball?
+
+    // Report Struct    Legends Meaning 
+    // Button 1         Rewind/Select
+    if (controller_report.BTN_GamePadButton1 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_S1;
+    
+    // Button 6         Right Flipper
+    if (controller_report.BTN_GamePadButton6 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R2;    
+    
+    // Button 8         Start
+    // GP2040-CE's "start" is S2 but this maps to "A" on the Legends Pinball controller. This is a bit confusing, but it works for now.
+    if (controller_report.BTN_GamePadButton8 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B1;
+    
+    // Button 10        AT Games (Home)
+    // Home invokes the Steam menu which is less than idea. Map this to B3/X for setting view mode
+    if (controller_report.BTN_GamePadButton10 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_B3;
+    
+    // Button 11        Left Flipper
     if (controller_report.BTN_GamePadButton11 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_L2;
-    if (controller_report.BTN_GamePadButton12 == 1) _controller_host_state.buttons |= GAMEPAD_MASK_R2;
+
+
+    // Auto Ball Launch should be A but it's read from the hat which is ALSO the dpad down.
+    // the right way to handle this is to have the longer plunger button is held, the stronger the pull (LY change)
+    //if ((_controller_host_state.dpad & GAMEPAD_MASK_DOWN) == GAMEPAD_MASK_DOWN) {
+    //    _controller_host_state.buttons |= GAMEPAD_MASK_B1; // map down to B1 for auto ball launch
+    //}
+
+    // Nudge handling is a bit more complicated
+    // the LS is used for nudge in PinbalFX. We can map a button press to a static LS value
+    // There's also an actual accelerometer in the controller, but supporting that 
+    // would require a sensitivity setting and a way to calibrate the controller. For now, we can just map the buttons to LS values.
+    // How should we map accelerometer data?
+    // the nudge buttons below are mapped to this, too, meaning if the nudge button is pressed, it wins
+    //_controller_host_state.lx = map(controller_report.RotationX, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
+    //_controller_host_state.ly = map(controller_report.RotationY, 0, 255, GAMEPAD_JOYSTICK_MIN,GAMEPAD_JOYSTICK_MAX);
+
+    _controller_host_state.lx = GAMEPAD_JOYSTICK_MID; // center
+    _controller_host_state.ly = GAMEPAD_JOYSTICK_MID; // center  
+    // Button 2         Forward Nudge
+    if (controller_report.BTN_GamePadButton2 == 1) _controller_host_state.ly = GAMEPAD_JOYSTICK_MIN; // forward
+    // Button 5         Left Nudge
+    if (controller_report.BTN_GamePadButton5 == 1) _controller_host_state.lx = GAMEPAD_JOYSTICK_MIN; // left
+    // Button 12        Right Nudge
+    if (controller_report.BTN_GamePadButton12 == 1) _controller_host_state.lx = GAMEPAD_JOYSTICK_MAX; // right  
 
     memcpy(&prev_controller_report, &controller_report, sizeof(controller_report));
 }
